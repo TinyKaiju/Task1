@@ -47,8 +47,9 @@ namespace GADE6122
             //Question 2.3
 
             //Methods.
-            //Character() // constructor
-
+            // Character // constructor
+            
+            
 
             //public virtual void Attack(Character target)
             //public bool isDead()
@@ -63,15 +64,37 @@ namespace GADE6122
         public abstract class Enemy : Character
         {
             protected Random randNum;
-            //Enemy() //Constructor
-            //public override ToString()
+            public Enemy(int x, int y, int Damage, int Maxhp, char Symbol)  //Constructor
+            {
+                int GetX() 
+                { 
+                    return x; 
+                }
+                int GetY()
+                {
+                    return y;
+                }             
+                Damage = getDamage();
+                Maxhp = getMaxHp();
+                Symbol = 'H';
+                
+            }        
+            public override string ToString()
+            {
+                return  "Goblin at [" + x + "," + y + "] (" + damage + ")";  
+            }
             
         }
 
         //Question 2.5
         public class Goblin : Enemy
         {
-            // Goblin() //Constructor
+            Goblin(int x, int y) //Constructor
+            {
+                x = 
+                this.maxHp = 10;
+                this.damage = 1;          
+            } 
             // public override ReturnMove()
             // public override ToString()
         }

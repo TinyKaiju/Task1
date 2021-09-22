@@ -19,7 +19,47 @@ namespace GADE6122
             protected int y;
 
             public enum tiletype { Hero, Enemy, Gold, Weapon };
-            //Tile(int a, int b, enum: tiletype type) //Constructor
+            tiletype type;
+
+            
+            public Tile()
+            { }
+            public Tile(int a, int b) //Constructor
+            {
+                this.x = a;
+                this.y = b;
+            }
+            public Tile(int a, int b,tiletype typeTile) //Constructor
+            {
+                this.x = a;
+                this.y = b;
+                this.type = typeTile;
+            }
+
+            public int getX()
+            {
+                return this.x;
+            }
+            public int getY()
+            {
+                return this.y;
+            }
+        }
+
+        public class Obstacle : Tile
+        {
+            public Obstacle()
+            {
+              
+            }
+        }
+
+        public class EmptyTile : Tile 
+        {
+            public EmptyTile()
+            {
+
+            }
         }
         //Question 2.2
         public abstract class Character : Tile
@@ -29,6 +69,7 @@ namespace GADE6122
             protected int damage;
             protected Tile[] tiles; //In ArrayVision = North, East, South, West
             public enum movement { No_movement, Up, Down, Left, Right };
+            movement move;
 
             //Get methods
             public int getHp()
@@ -44,19 +85,48 @@ namespace GADE6122
                 return this.damage;
             }
 
+
             //Question 2.3
 
             //Methods.
-            //Character() // constructor
+            Character(int a, int b) // constructor
+            {
+                this.x = a;
+                this.y = b;
+            }
 
 
-            //public virtual void Attack(Character target)
-            //public bool isDead()
-            //public virtual bool CheckRange(Character target)
-            //private int DistanceTo()
-            //public void Move(enum : movement move)
-            //public abstract ReturnMove(enum : movement move)*
-            //public abstract override ToString()    
+            public virtual void Attack(Character target)
+            { }
+            public bool isDead()
+            {
+                if (this.hp == 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            public virtual bool CheckRange(Character target)
+            {
+                DistanceTo(target);
+                if ((target.getX() - this.x) == 1)
+                {
+                    return true;
+                }
+                return false;
+            }
+            private int DistanceTo(Character target)
+            {
+                return 0;
+            }
+            public void Move(movement move)
+            { }
+            public abstract movement ReturnMove(movement move);
+            public abstract override ToString()
+            { }
         }
 
         //Question 2.4

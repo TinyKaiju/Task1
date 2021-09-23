@@ -69,7 +69,7 @@ namespace GADE6122
             protected int hp;
             protected int maxHp;
             protected int damage;
-            protected Tile[] tiles; //In ArrayVision = North, East, South, West
+            protected Tile[] visionTiles; //In ArrayVision = North, East, South, West
             public enum movementEnum { No_movement, Up, Down, Left, Right };
             movementEnum movement;
 
@@ -133,16 +133,8 @@ namespace GADE6122
             public Enemy() { }
             public Enemy(int x, int y, int Damage, int Maxhp, char Symbol)  //Constructor
             {
-                int GetX() 
-                { 
-                    return this.x; 
-                }
-                int GetY()
-                {
-                    return this.y;
-                }
-                /*this.x = x;
-                this.y = y;*/
+                this.x = x;
+                this.y = y;
                 Damage = getDamage();
                 Maxhp = getMaxHp();
                 Symbol = 'H';
@@ -185,19 +177,50 @@ namespace GADE6122
 
         //Question 3
         //Question 3.1
-        public class Map
+        public class Map : Tile
         {
-            Tile[][] mapTiles;
+            Tile[,] mapTiles;
             Hero player = new Hero();
             Enemy[] enemies;
             int mapWidth;
             int mapHeight;
             Random randNum;
 
-        //Question 3.2
-            //public void UpdateVision
-            //private TileCreate(enum: tileType type)
-            //own methods
+            public Map(int wMin, int wMax, int hMin, int hMax, int e)
+            {
+                this.mapWidth = randomizer(wMin, wMax);
+                this.mapHeight = randomizer(wMin, wMax);
+                enemies = new Enemy[e];
+                mapTiles = new Tile[mapWidth, mapHeight];
+                //create Hero 
+                //create enemies
+                
+            }
+
+            /*public void UpdateVision(class target)
+            {
+                target.visionTiles[0] = target.getX - 1;
+                target.visionTiles = target.getX + 1;
+                target.visionTiles = target.getY - 1;
+                target.visionTiles = target.getY + 1;
+            }*/
+
+            private Tile Create(tiletype type)
+            {
+                switch (type)
+                {
+                    case tiletype.Hero: return new Hero();
+                    //case tiletype.Enemy: return new Enemy(1, 1, 1, 'E');
+                    case tiletype.Gold: return new Hero();
+                    case tiletype.Weapon: return new Hero();
+                    default: return new EmptyTile();
+                }
+            }
+
+            private int randomizer(int min, int max)
+            {
+                return randNum.Next(min, max);
+            }
         }
 
         //Question 3.3
@@ -205,9 +228,25 @@ namespace GADE6122
         {
             private Map map;
 
-            //public getMap()
-            //GameEngine()
-            //public bool MovePlayer()
+            public GameEngine() //default constructor
+            { }
+
+            public GameEngine(int widthMin, int widthMax, int heightMin, int heightMax, int enemyNum) // constructor
+            {
+                Map map = new Map(widthMin, widthMax, heightMin, heightMax, enemyNum);
+            }
+           
+            public bool MovePlayer()
+            {
+                if (true) // player can move
+                {
+                    return true;
+                }
+                else
+                {
+                    return false; //nothing
+                }
+            }
         }
         public Form1()
         {

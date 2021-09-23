@@ -132,20 +132,12 @@ namespace GADE6122
             protected Random randNum;
             public Enemy() { }
             public Enemy(int x, int y, int Damage, int Maxhp, char Symbol)  //Constructor
-            {
-                int GetX() 
-                { 
-                    return this.x; 
-                }
-                int GetY()
-                {
-                    return this.y;
-                }
-                /*this.x = x;
-                this.y = y;*/
+            {             
+                x = this.x;              
+                y = this.y;
                 Damage = getDamage();
                 Maxhp = getMaxHp();
-                Symbol = 'H';
+                Symbol = 'G';
                 
                 
             }        
@@ -166,21 +158,33 @@ namespace GADE6122
                 this.maxHp = 10;
                 this.damage = 1;          
             }
-            public override ReturnMove() 
+            public override movementEnum ReturnMove(movementEnum move) 
             {
-                
+                //if statement?               
+                return move;
             }
-            
-
-            // public override ToString()
         }
 
         //Question 2.6
         public class Hero : Character
         {
-            // Goblin() //Constructor
-            // public override ReturnMove()
-            // public override ToString()
+            Hero(int x, int y) //Constructor
+            {
+                this.x = x;
+                this.y = y;
+                this.damage = 2;
+                this.maxHp = getMaxHp();
+                this.hp = getHp();            
+            }
+            public override movementEnum ReturnMove(movementEnum move)
+            {               
+            
+                return move;
+            }
+            public override string ToString()
+            {
+                return ("Player Stats:\n HP: " + hp + "/" + maxHp + "\n Damage: " + damage + "\n [" + getX() + "," + getY() + "]");
+            }
         }
 
         //Question 3

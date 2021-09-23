@@ -141,8 +141,19 @@ namespace GADE6122
         //Question 2.5
         public class Goblin : Enemy
         {
-            // Goblin() //Constructor
-            // public override ReturnMove()
+            Goblin(int x, int y) //Constructor
+            {
+                this.x = x;
+                this.y = y;
+                this.maxHp = 10;
+                this.damage = 1;          
+            }
+            public override movementEnum ReturnMove(movementEnum move) 
+            {
+                return move;
+            }
+            
+
             // public override ToString()
         }
 

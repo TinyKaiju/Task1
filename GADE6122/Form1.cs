@@ -64,19 +64,23 @@ namespace GADE6122
         public abstract class Enemy : Character
         {
             protected Random randNum;
+            public Enemy() { }
             public Enemy(int x, int y, int Damage, int Maxhp, char Symbol)  //Constructor
             {
                 int GetX() 
                 { 
-                    return x; 
+                    return this.x; 
                 }
                 int GetY()
                 {
-                    return y;
-                }             
+                    return this.y;
+                }
+                /*this.x = x;
+                this.y = y;*/
                 Damage = getDamage();
                 Maxhp = getMaxHp();
                 Symbol = 'H';
+                
                 
             }        
             public override string ToString()
@@ -91,11 +95,17 @@ namespace GADE6122
         {
             Goblin(int x, int y) //Constructor
             {
-                x = 
+                this.x = x;
+                this.y = y;
                 this.maxHp = 10;
                 this.damage = 1;          
-            } 
-            // public override ReturnMove()
+            }
+            public override ReturnMove() 
+            {
+                
+            }
+            
+
             // public override ToString()
         }
 

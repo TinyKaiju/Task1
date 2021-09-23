@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -50,7 +50,8 @@ namespace GADE6122
         {
             public Obstacle()
             {
-              
+                this.getX();
+                this.getY();
             }
         }
 
@@ -58,7 +59,8 @@ namespace GADE6122
         {
             public EmptyTile()
             {
-
+                this.getX();
+                this.getY();
             }
         }
         //Question 2.2
@@ -68,8 +70,8 @@ namespace GADE6122
             protected int maxHp;
             protected int damage;
             protected Tile[] tiles; //In ArrayVision = North, East, South, West
-            public enum movement { No_movement, Up, Down, Left, Right };
-            movement move;
+            public enum movementEnum { No_movement, Up, Down, Left, Right };
+            movementEnum movement;
 
             //Get methods
             public int getHp()
@@ -84,18 +86,14 @@ namespace GADE6122
             {
                 return this.damage;
             }
-
-
-            //Question 2.3
-
-            //Methods.
-            Character(int a, int b) // constructor
+            public Character()
+            { }
+            public Character(int a, int b, int damage, int maxHP, char symbol) // constructor
             {
                 this.x = a;
                 this.y = b;
             }
-
-
+            
             public virtual void Attack(Character target)
             { }
             public bool isDead()
@@ -122,19 +120,39 @@ namespace GADE6122
             {
                 return 0;
             }
-            public void Move(movement move)
+            public void Move(movementEnum move)
             { }
-            public abstract movement ReturnMove(movement move);
-            public abstract override ToString()
-            { }
+            public abstract movementEnum ReturnMove(movementEnum move);
+            //public abstract override ToString() { }
         }
 
         //Question 2.4
         public abstract class Enemy : Character
         {
             protected Random randNum;
-            //Enemy() //Constructor
-            //public override ToString()
+            public Enemy() { }
+            public Enemy(int x, int y, int Damage, int Maxhp, char Symbol)  //Constructor
+            {
+                int GetX() 
+                { 
+                    return this.x; 
+                }
+                int GetY()
+                {
+                    return this.y;
+                }
+                /*this.x = x;
+                this.y = y;*/
+                Damage = getDamage();
+                Maxhp = getMaxHp();
+                Symbol = 'H';
+                
+                
+            }        
+            public override string ToString()
+            {
+                return  "Goblin at [" + x + "," + y + "] (" + damage + ")";  
+            }
             
         }
 

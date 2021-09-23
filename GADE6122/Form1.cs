@@ -172,7 +172,9 @@ namespace GADE6122
         //Question 2.6
         public class Hero : Character
         {
-            Hero(int x, int y) //Constructor
+            public Hero()
+            { }
+            public Hero(int x, int y) //Constructor
             {
                 this.x = x;
                 this.y = y;
@@ -196,7 +198,7 @@ namespace GADE6122
         public class Map : Tile
         {
             Tile[,] mapTiles;
-            Hero player = new Hero();
+            Hero player;
             Enemy[] enemies;
             int mapWidth;
             int mapHeight;

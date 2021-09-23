@@ -180,7 +180,8 @@ namespace GADE6122
                 this.y = y;
                 this.damage = 2;
                 this.maxHp = getMaxHp();
-                this.hp = getHp();            
+                this.hp = getHp();
+                char SymbolHero = 'H';
             }
             public override movementEnum ReturnMove(movementEnum move)
             {               
@@ -197,6 +198,7 @@ namespace GADE6122
         //Question 3.1
         public class Map : Tile
         {
+
             Tile[,] mapTiles;
             Hero player;
             Enemy[] enemies;
@@ -272,6 +274,21 @@ namespace GADE6122
         }
 
         private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
         {
 
         }

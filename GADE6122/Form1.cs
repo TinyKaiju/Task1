@@ -134,59 +134,59 @@ namespace GADE6122
 
             //vision Setting
             public void setVisionTiles(Tile upVis, Tile downVis, Tile rightVis, Tile leftVis)
-            {/*
+            {
                 tiletype tileTemp = upVis.getTiletype();
 
                 if (tileTemp == tiletype.Hero)
                 { 
-                    visionTiles[0] = new Hero(upVis.getX(), upVis.getY());
+                    this.visionTiles[0] = new Hero(upVis.getX(), upVis.getY());
                 }
                 if (tileTemp == tiletype.Enemy)
                 {
-                    visionTiles[0] = new Goblin(upVis.getX(), upVis.getY());
+                    this.visionTiles[0] = new Goblin(upVis.getX(), upVis.getY());
                 }
                 else
                 { 
-                    visionTiles[0] = new EmptyTile(upVis.getX(), upVis.getY());
+                    this.visionTiles.[0] = new EmptyTile(upVis.getX(), upVis.getY());
                 }
 
                 if (tileTemp == tiletype.Hero) //down
                 {
-                    visionTiles[1] = new Hero(downVis.getX(), downVis.getY());
+                    this.visionTiles[1] = new Hero(downVis.getX(), downVis.getY());
                 }
                 if (tileTemp == tiletype.Enemy)
                 {
-                    visionTiles[1] = new Goblin(downVis.getX(), downVis.getY());
+                    this.visionTiles[1] = new Goblin(downVis.getX(), downVis.getY());
                 }
                 else
                 {
-                    visionTiles[1] = new EmptyTile(downVis.getX(), downVis.getY());
+                    this.visionTiles[1] = new EmptyTile(downVis.getX(), downVis.getY());
                 }
 
                 if (tileTemp == tiletype.Hero)
                 {
-                    visionTiles[2] = new Hero(rightVis.getX(), rightVis.getY());
+                    this.visionTiles[2] = new Hero(rightVis.getX(), rightVis.getY());
                 }
                 if (tileTemp == tiletype.Enemy)
                 {
-                    visionTiles[2] = new Goblin(rightVis.getX(), rightVis.getY());
+                    this.visionTiles[2] = new Goblin(rightVis.getX(), rightVis.getY());
                 }
                 else
                 {
-                    visionTiles[2] = new EmptyTile(rightVis.getX(), rightVis.getY());
+                    this.visionTiles[2] = new EmptyTile(rightVis.getX(), rightVis.getY());
                 }
                 if (tileTemp == tiletype.Hero)
                 {
-                    visionTiles[3] = new Hero(leftVis.getX(), leftVis.getY());
+                    this.visionTiles[3] = new Hero(leftVis.getX(), leftVis.getY());
                 }
                 if (tileTemp == tiletype.Enemy)
                 {
-                    visionTiles[3] = new Goblin(leftVis.getX(), leftVis.getY());
+                    this.visionTiles[3] = new Goblin(leftVis.getX(), leftVis.getY());
                 }
                 else
                 {
-                    visionTiles[3] = new EmptyTile(leftVis.getX(), leftVis.getY());
-                }*/
+                    this.visionTiles[3] = new EmptyTile(leftVis.getX(), leftVis.getY());
+                }
             }
         }
 
@@ -515,11 +515,12 @@ namespace GADE6122
                 return output;
             }
         }
+        GameEngine game;
         public Form1()
         {
             InitializeComponent();
-            GameEngine game = new GameEngine(10, 20, 10, 20, 5);
-            richTextBox1.Text = game.ToString();
+            game = new GameEngine(10, 20, 10, 20, 5);
+            rtbMap.Text = game.ToString();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -541,5 +542,24 @@ namespace GADE6122
 
         }
 
+        private void btnUp_Click(object sender, EventArgs e)
+        {
+            game.MovePlayer(Character.movementEnum.Up);
+        }
+
+        private void btnDown_Click(object sender, EventArgs e)
+        {
+            game.MovePlayer(Character.movementEnum.Down);
+        }
+
+        private void btnLeft_Click(object sender, EventArgs e)
+        {
+            game.MovePlayer(Character.movementEnum.Left);
+        }
+
+        private void btnRight_Click(object sender, EventArgs e)
+        {
+            game.MovePlayer(Character.movementEnum.Right);
+        }
     }
 }

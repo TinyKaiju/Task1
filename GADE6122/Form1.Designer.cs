@@ -33,15 +33,16 @@ namespace GADE6122
             this.label1 = new System.Windows.Forms.Label();
             this.MemoPlayerInfo = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.BtnAttack = new System.Windows.Forms.Button();
             this.MemoEnemyInfo = new System.Windows.Forms.RichTextBox();
             this.CmbEnemyList = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.btnUp = new System.Windows.Forms.Button();
             this.btnDown = new System.Windows.Forms.Button();
             this.btnLeft = new System.Windows.Forms.Button();
             this.btnRight = new System.Windows.Forms.Button();
+            this.rtbMap = new System.Windows.Forms.RichTextBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -88,6 +89,16 @@ namespace GADE6122
             this.panel1.Size = new System.Drawing.Size(331, 311);
             this.panel1.TabIndex = 3;
             // 
+            // richTextBox1
+            // 
+            this.richTextBox1.BackColor = System.Drawing.Color.IndianRed;
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox1.Location = new System.Drawing.Point(13, 209);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(302, 82);
+            this.richTextBox1.TabIndex = 6;
+            this.richTextBox1.Text = "";
+            // 
             // BtnAttack
             // 
             this.BtnAttack.BackColor = System.Drawing.Color.IndianRed;
@@ -129,54 +140,47 @@ namespace GADE6122
             this.label2.TabIndex = 0;
             this.label2.Text = "Attacking";
             // 
-            // richTextBox1
-            // 
-            this.richTextBox1.BackColor = System.Drawing.Color.IndianRed;
-            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox1.Location = new System.Drawing.Point(13, 209);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(302, 82);
-            this.richTextBox1.TabIndex = 6;
-            this.richTextBox1.Text = "";
-            // 
             // btnUp
             // 
             this.btnUp.BackColor = System.Drawing.Color.IndianRed;
             this.btnUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnUp.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnUp.Font = new System.Drawing.Font("Unispace", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnUp.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnUp.Location = new System.Drawing.Point(561, 463);
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size(76, 50);
             this.btnUp.TabIndex = 4;
             this.btnUp.Text = "Up";
             this.btnUp.UseVisualStyleBackColor = false;
+            this.btnUp.Click += new System.EventHandler(this.btnUp_Click);
             // 
             // btnDown
             // 
             this.btnDown.BackColor = System.Drawing.Color.IndianRed;
             this.btnDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnDown.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnDown.Font = new System.Drawing.Font("Unispace", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnDown.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnDown.Location = new System.Drawing.Point(561, 519);
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size(76, 50);
             this.btnDown.TabIndex = 5;
             this.btnDown.Text = "Down";
             this.btnDown.UseVisualStyleBackColor = false;
+            this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
             // 
             // btnLeft
             // 
             this.btnLeft.BackColor = System.Drawing.Color.IndianRed;
             this.btnLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnLeft.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnLeft.Font = new System.Drawing.Font("Unispace", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnLeft.Location = new System.Drawing.Point(479, 490);
             this.btnLeft.Name = "btnLeft";
             this.btnLeft.Size = new System.Drawing.Size(76, 50);
             this.btnLeft.TabIndex = 6;
             this.btnLeft.Text = "Left";
             this.btnLeft.UseVisualStyleBackColor = false;
+            this.btnLeft.Click += new System.EventHandler(this.btnLeft_Click);
             // 
             // btnRight
             // 
@@ -185,19 +189,32 @@ namespace GADE6122
             this.btnRight.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.btnRight.FlatAppearance.BorderSize = 0;
             this.btnRight.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnRight.Font = new System.Drawing.Font("Unispace", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnRight.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnRight.Location = new System.Drawing.Point(643, 490);
             this.btnRight.Name = "btnRight";
             this.btnRight.Size = new System.Drawing.Size(76, 50);
             this.btnRight.TabIndex = 7;
             this.btnRight.Text = "Right";
             this.btnRight.UseVisualStyleBackColor = false;
+            this.btnRight.Click += new System.EventHandler(this.btnRight_Click);
+            // 
+            // rtbMap
+            // 
+            this.rtbMap.BackColor = System.Drawing.Color.GhostWhite;
+            this.rtbMap.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbMap.Location = new System.Drawing.Point(21, 36);
+            this.rtbMap.Name = "rtbMap";
+            this.rtbMap.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.rtbMap.Size = new System.Drawing.Size(387, 309);
+            this.rtbMap.TabIndex = 8;
+            this.rtbMap.Text = "";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(787, 581);
+            this.Controls.Add(this.rtbMap);
             this.Controls.Add(this.btnRight);
             this.Controls.Add(this.btnLeft);
             this.Controls.Add(this.btnDown);
@@ -231,6 +248,7 @@ namespace GADE6122
         private System.Windows.Forms.Button btnDown;
         private System.Windows.Forms.Button btnLeft;
         private System.Windows.Forms.Button btnRight;
+        private System.Windows.Forms.RichTextBox rtbMap;
     }
 }
 

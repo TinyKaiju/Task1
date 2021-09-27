@@ -1,4 +1,4 @@
-using System;
+using System; // Yunus Joosub & Thoriso Tlale
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -147,7 +147,7 @@ namespace GADE6122
                 }
                 else
                 { 
-                    this.visionTiles.[0] = new EmptyTile(upVis.getX(), upVis.getY());
+                    this.visionTiles[0] = new EmptyTile(upVis.getX(), upVis.getY());
                 }
 
                 if (tileTemp == tiletype.Hero) //down

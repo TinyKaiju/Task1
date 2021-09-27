@@ -262,6 +262,19 @@ namespace GADE6122
                 }
             }
 
+            public int getWidth()
+            { 
+                return mapWidth;
+            }
+            public int getHeight()
+            {
+                return mapWidth;
+            }
+            public Tile getMapTiles(int x, int y)
+            {
+                return mapTiles[x, y];
+            }
+
         }
 
         //Question 3.3
@@ -270,7 +283,7 @@ namespace GADE6122
             private const char heroChar = 'H';
             private const char goblinChar = 'G';
             private const char emptyChar = '.';
-            private const char ObstacleChar = '#';
+            private const char obstacleChar = '#';
             private Map map;
 
             public GameEngine(int widthMin, int widthMax, int heightMin, int heightMax, int enemyNum) // constructor
@@ -290,39 +303,39 @@ namespace GADE6122
                 }
             }
 
-            /*public override string ToString()
+            public override string ToString()
             {
                 string output = "";
-                for(int i = 0; i < map.getWidth; i++)
+                for(int i = 0; i < map.getWidth(); i++)
                 {
                     output += obstacleChar;
                 }
-                for (int x = 0; x < mapWidth; x++)
+                for (int x = 0; x < map.getWidth(); x++)
                 {
-                    for (int y = 0; y < mapHeight; y++)
+                    for (int y = 0; y < map.getHeight(); y++)
                     {
-                        if (mapTiles[x, y] == null)
+                        if (map.getMapTiles(x,y) == null)
                         {
                             output += "\n" + obstacleChar;
-                            switch (mapTiles[x,y])
+                            switch (map.getMapTiles(x, y))
                             {
                                 case Hero: output += heroChar;
                                     break;
                                 case Goblin: output += goblinChar;
                                     break;
-                                case EmptyTile: output += EmptyChar;
+                                case EmptyTile: output += emptyChar;
                                     break;
                             }
                             output += obstacleChar;
                         }
                     }
                 }
-                for (int i = 0; i < map.getWidth; i++)
+                for (int i = 0; i < map.getWidth(); i++)
                 {
                     output += "\n" + obstacleChar;
                 }
                 return output;
-            }*/
+            }
         }
         public Form1()
         {

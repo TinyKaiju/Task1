@@ -71,7 +71,7 @@ namespace GADE6122
             {
                 return this.damage;
             }
- 
+
             public Character(int a, int b, char symbol) : base(a, b) // constructor
             { }
 
@@ -106,19 +106,23 @@ namespace GADE6122
                 return distance;
             }
             public void Move(movementEnum move)
-            { 
-                switch(move)
+            {
+                switch (move)
                 {
-                    case movementEnum.Up: this.y++;
+                    case movementEnum.Up:
+                        this.y++;
                         break;
-                    case movementEnum.Down: this.y--;
+                    case movementEnum.Down:
+                        this.y--;
                         break;
-                    case movementEnum.Right: this.x++;
+                    case movementEnum.Right:
+                        this.x++;
                         break;
-                    case movementEnum.Left: this.x--;
+                    case movementEnum.Left:
+                        this.x--;
                         break;
                 }
-                
+
             }
             public abstract movementEnum ReturnMove(movementEnum move);
             //public abstract override ToString() { }
@@ -189,7 +193,7 @@ namespace GADE6122
 
         //Question 3
         //Question 3.1
-        public class Map 
+        public class Map
         {
 
             private Tile[,] mapTiles;
@@ -209,7 +213,7 @@ namespace GADE6122
 
                 player = (Hero)Create(Tile.tiletype.Hero); //cast????
                 mapTiles[player.getX(), player.getY()] = player;
-                
+
                 for (int i = 0; i < e; i++)
                 {
                     enemies[i] = (Enemy)Create(Tile.tiletype.Enemy);
@@ -239,22 +243,26 @@ namespace GADE6122
                     uniqueY = randNum.Next(mapHeight);
                 }
 
-                
+
                 switch (type)  // create tile 
                 {
-                    case Tile.tiletype.Hero: return new Hero(uniqueX, uniqueY);
-                    case Tile.tiletype.Enemy: return new Goblin(uniqueX, uniqueY);
+                    case Tile.tiletype.Hero:
+                        return new Hero(uniqueX, uniqueY);
+                        break;
+                    case Tile.tiletype.Enemy:
+                        return new Goblin(uniqueX, uniqueY);
+                        break;
                     default: return new EmptyTile(uniqueX, uniqueY);
                 }
             }
 
-            private void fillMap() 
-            { 
+            public void fillMap()
+            {
                 for (int x = 0; x < mapWidth; x++)
                 {
                     for (int y = 0; y < mapHeight; y++)
                     {
-                        if (mapTiles[x,y] == null)
+                        if (mapTiles[x, y] == null)
                         {
                             mapTiles[x, y] = new EmptyTile(x, y);
                         }
@@ -263,7 +271,7 @@ namespace GADE6122
             }
 
             public int getWidth()
-            { 
+            {
                 return mapWidth;
             }
             public int getHeight()
@@ -275,6 +283,20 @@ namespace GADE6122
                 return mapTiles[x, y];
             }
 
+            public int getPlayerX()
+            {
+                return player.getX();
+            }
+            public int getPlayerY()
+            {
+                return player.getY();
+            }
+
+            public void Move(Character.movementEnum move)
+            {
+                player.Move(move);
+
+            }
         }
 
         //Question 3.3
@@ -291,10 +313,34 @@ namespace GADE6122
                 Map map = new Map(widthMin, widthMax, heightMin, heightMax, enemyNum);
             }
 
-            public bool MovePlayer()
+            public bool MovePlayer(Character.movementEnum moveType)
             {
-                if (true) // player can move
+                int x, y;
+                x = map.getPlayerX();
+                y = map.getPlayerY();
+
+                switch (moveType)
                 {
+                    case Character.movementEnum.Up:
+                        y++;
+                        break;
+                    case Character.movementEnum.Down:
+                        y--;
+                        break;
+                    case Character.movementEnum.Right:
+                        x++;
+                        break;
+                    case Character.movementEnum.Left:
+                        x--;
+                        break;
+                }
+
+                EmptyTile tempTile = new EmptyTile(x, y);
+
+                if (map.getMapTiles(x, y).type == tempTile.type) // player can move
+                {
+                    map.Move(moveType);
+                    map.fillMap();
                     return true;
                 }
                 else
@@ -306,7 +352,7 @@ namespace GADE6122
             public override string ToString()
             {
                 string output = "";
-                for(int i = 0; i < map.getWidth(); i++)
+                for (int i = 0; i < map.getWidth(); i++)
                 {
                     output += obstacleChar;
                 }
@@ -314,16 +360,19 @@ namespace GADE6122
                 {
                     for (int y = 0; y < map.getHeight(); y++)
                     {
-                        if (map.getMapTiles(x,y) == null)
+                        if (map.getMapTiles(x, y) == null)
                         {
                             output += "\n" + obstacleChar;
                             switch (map.getMapTiles(x, y))
                             {
-                                case Hero: output += heroChar;
+                                case Hero:
+                                    output += heroChar;
                                     break;
-                                case Goblin: output += goblinChar;
+                                case Goblin:
+                                    output += goblinChar;
                                     break;
-                                case EmptyTile: output += emptyChar;
+                                case EmptyTile:
+                                    output += emptyChar;
                                     break;
                             }
                             output += obstacleChar;

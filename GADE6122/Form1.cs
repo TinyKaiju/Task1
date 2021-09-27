@@ -169,6 +169,7 @@ namespace GADE6122
         public class Hero : Character
         {
 
+
             public Hero(int x, int y) : base(x, y, 'H')//Constructor
             {
                 this.damage = 2;
@@ -178,7 +179,6 @@ namespace GADE6122
             }
             public override movementEnum ReturnMove(movementEnum move)
             {
-
                 return move;
             }
             public override string ToString()
@@ -332,6 +332,21 @@ namespace GADE6122
         private void button1_Click(object sender, EventArgs e)
         {
         }
-     
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

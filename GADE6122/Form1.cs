@@ -19,21 +19,12 @@ namespace GADE6122
             protected int y;
 
             public enum tiletype { Hero, Enemy, Gold, Weapon };
-            tiletype type;
+            public tiletype type;
 
-            
-            public Tile()
-            { }
             public Tile(int a, int b) //Constructor
             {
                 this.x = a;
                 this.y = b;
-            }
-            public Tile(int a, int b,tiletype typeTile) //Constructor
-            {
-                this.x = a;
-                this.y = b;
-                this.type = typeTile;
             }
 
             public int getX()
@@ -48,20 +39,14 @@ namespace GADE6122
 
         public class Obstacle : Tile
         {
-            public Obstacle()
-            {
-                this.getX();
-                this.getY();
-            }
+            public Obstacle(int x, int y) : base(x, y)
+            { }
         }
 
-        public class EmptyTile : Tile 
+        public class EmptyTile : Tile
         {
-            public EmptyTile()
-            {
-                this.getX();
-                this.getY();
-            }
+            public EmptyTile(int x, int y) : base(x, y)
+            { }
         }
         //Question 2.2
         public abstract class Character : Tile
@@ -70,7 +55,7 @@ namespace GADE6122
             protected int maxHp;
             protected int damage;
             protected Tile[] visionTiles; //In ArrayVision = North, East, South, West
-            public enum movementEnum { No_movement, Up, Down, Left, Right };
+            public enum movementEnum { None, Up, Down, Left, Right };
             movementEnum movement;
 
             //Get methods
@@ -86,14 +71,10 @@ namespace GADE6122
             {
                 return this.damage;
             }
-            public Character()
+ 
+            public Character(int a, int b, char symbol) : base(a, b) // constructor
             { }
-            public Character(int a, int b, int damage, int maxHP, char symbol) // constructor
-            {
-                this.x = a;
-                this.y = b;
-            }
-            
+
             public virtual void Attack(Character target)
             { }
             public bool isDead()
@@ -109,58 +90,73 @@ namespace GADE6122
             }
             public virtual bool CheckRange(Character target)
             {
-                DistanceTo(target);
-                if ((target.getX() - this.x) == 1)
+                if ((DistanceTo(target)) == 1)
                 {
                     return true;
                 }
                 return false;
             }
-            private int DistanceTo(Character target)
+            private int DistanceTo(Character target) // Incomplete
             {
-                return 0;
+                int x = target.getX();
+                int y = target.getY();
+
+                int distance = (this.getX() - x) + (this.getY() - y);
+
+                return distance;
             }
             public void Move(movementEnum move)
-            { }
+            { 
+                switch(move)
+                {
+                    case movementEnum.Up: this.y++;
+                        break;
+                    case movementEnum.Down: this.y--;
+                        break;
+                    case movementEnum.Right: this.x++;
+                        break;
+                    case movementEnum.Left: this.x--;
+                        break;
+                }
+                
+            }
             public abstract movementEnum ReturnMove(movementEnum move);
             //public abstract override ToString() { }
+
+            //vision Setting
+            public void setVisionTiles()
+            {
+                visionTiles[0] = new EmptyTile(this.x - 1, this.y);
+                visionTiles[1] = new EmptyTile(this.x + 1, this.y);
+                visionTiles[2] = new EmptyTile(this.x, this.y - 1);
+                visionTiles[3] = new EmptyTile(this.y, this.y + 1);
+            }
         }
 
         //Question 2.4
         public abstract class Enemy : Character
         {
             protected Random randNum;
-            public Enemy() { }
-            public Enemy(int x, int y, int Damage, int Maxhp, char Symbol)  //Constructor
 
+            public Enemy(int x, int y, int Damage, int Maxhp, char Symbol) : base(x, y, Symbol) //Constructor
             {
-                this.x = x;
-                this.y = y;
+                this.damage = Damage;
+                this.maxHp = Maxhp;
+                this.type = tiletype.Enemy;
+            }
 
-                Damage = getDamage();
-                Maxhp = getMaxHp();
-                Symbol = 'G';
-                
-                
-            }        
             public override string ToString()
             {
-                return  "Goblin at [" + x + "," + y + "] (" + damage + ")";  
+                return "Goblin at [" + x + "," + y + "] (" + damage + ")"; // double check 
             }
-            
         }
 
         //Question 2.5
         public class Goblin : Enemy
         {
-            Goblin(int x, int y) //Constructor
-            {
-                this.x = x;
-                this.y = y;
-                this.maxHp = 10;
-                this.damage = 1;          
-            }
-            public override movementEnum ReturnMove(movementEnum move) 
+            public Goblin(int x, int y) : base(x, y, 1, 10, 'G')//Constructor
+            { }
+            public override movementEnum ReturnMove(movementEnum move)
             {
 
                 //if statement?               
@@ -172,20 +168,17 @@ namespace GADE6122
         //Question 2.6
         public class Hero : Character
         {
-            public Hero()
-            { }
-            public Hero(int x, int y) //Constructor
+
+
+            public Hero(int x, int y) : base(x, y, 'H')//Constructor
             {
-                this.x = x;
-                this.y = y;
                 this.damage = 2;
                 this.maxHp = getMaxHp();
                 this.hp = getHp();
-                char SymbolHero = 'H';
+                this.type = tiletype.Hero;
             }
             public override movementEnum ReturnMove(movementEnum move)
-            {               
-            
+            {
                 return move;
             }
             public override string ToString()
@@ -196,66 +189,95 @@ namespace GADE6122
 
         //Question 3
         //Question 3.1
-        public class Map : Tile
+        public class Map 
         {
 
-            Tile[,] mapTiles;
-            Hero player;
-            Enemy[] enemies;
-            int mapWidth;
-            int mapHeight;
-            Random randNum;
+            private Tile[,] mapTiles;
+            private Hero player;
+            private Enemy[] enemies;
+            private int mapWidth;
+            private int mapHeight;
+            private Random randNum;
 
             public Map(int wMin, int wMax, int hMin, int hMax, int e)
             {
-                this.mapWidth = randomizer(wMin, wMax);
-                this.mapHeight = randomizer(wMin, wMax);
+                this.mapWidth = randNum.Next(wMin, wMax);
+                this.mapHeight = randNum.Next(hMin, hMax);
+
                 enemies = new Enemy[e];
                 mapTiles = new Tile[mapWidth, mapHeight];
-                //create Hero 
-                //create enemies
+
+                player = (Hero)Create(Tile.tiletype.Hero); //cast????
+                mapTiles[player.getX(), player.getY()] = player;
                 
+                for (int i = 0; i < e; i++)
+                {
+                    enemies[i] = (Enemy)Create(Tile.tiletype.Enemy);
+                    mapTiles[enemies[i].getX(), enemies[i].getY()] = enemies[i];
+                }
+
+                UpdateVision();
+                fillMap();
             }
 
-            /*public void UpdateVision(class target)
+            public void UpdateVision()
             {
-                target.visionTiles[0] = target.getX - 1;
-                target.visionTiles = target.getX + 1;
-                target.visionTiles = target.getY - 1;
-                target.visionTiles = target.getY + 1;
-            }*/
-
-            private Tile Create(tiletype type)
-            {
-                switch (type)
+                player.setVisionTiles();
+                for (int i = 0; i < enemies.Length; i++)
                 {
-                    case tiletype.Hero: return new Hero();
-                    //case tiletype.Enemy: return new Enemy(1, 1, 1, 'E');
-                    case tiletype.Gold: return new Hero();
-                    case tiletype.Weapon: return new Hero();
-                    default: return new EmptyTile();
+                    enemies[i].setVisionTiles();
                 }
             }
 
-            private int randomizer(int min, int max)
+            private Tile Create(Tile.tiletype type)
             {
-                return randNum.Next(min, max);
+                int uniqueX = randNum.Next(mapWidth);
+                int uniqueY = randNum.Next(mapHeight);
+                while (mapTiles[uniqueX, uniqueY] != null)
+                {
+                    uniqueX = randNum.Next(mapWidth);
+                    uniqueY = randNum.Next(mapHeight);
+                }
+
+                
+                switch (type)  // create tile 
+                {
+                    case Tile.tiletype.Hero: return new Hero(uniqueX, uniqueY);
+                    case Tile.tiletype.Enemy: return new Goblin(uniqueX, uniqueY);
+                    default: return new EmptyTile(uniqueX, uniqueY);
+                }
             }
+
+            private void fillMap() 
+            { 
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    for (int y = 0; y < mapHeight; y++)
+                    {
+                        if (mapTiles[x,y] == null)
+                        {
+                            mapTiles[x, y] = new EmptyTile(x, y);
+                        }
+                    }
+                }
+            }
+
         }
 
         //Question 3.3
         public class GameEngine
         {
+            private const char heroChar = 'H';
+            private const char goblinChar = 'G';
+            private const char emptyChar = '.';
+            private const char ObstacleChar = '#';
             private Map map;
-
-            public GameEngine() //default constructor
-            { }
 
             public GameEngine(int widthMin, int widthMax, int heightMin, int heightMax, int enemyNum) // constructor
             {
                 Map map = new Map(widthMin, widthMax, heightMin, heightMax, enemyNum);
             }
-           
+
             public bool MovePlayer()
             {
                 if (true) // player can move
@@ -267,6 +289,40 @@ namespace GADE6122
                     return false; //nothing
                 }
             }
+
+            /*public override string ToString()
+            {
+                string output = "";
+                for(int i = 0; i < map.getWidth; i++)
+                {
+                    output += obstacleChar;
+                }
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    for (int y = 0; y < mapHeight; y++)
+                    {
+                        if (mapTiles[x, y] == null)
+                        {
+                            output += "\n" + obstacleChar;
+                            switch (mapTiles[x,y])
+                            {
+                                case Hero: output += heroChar;
+                                    break;
+                                case Goblin: output += goblinChar;
+                                    break;
+                                case EmptyTile: output += EmptyChar;
+                                    break;
+                            }
+                            output += obstacleChar;
+                        }
+                    }
+                }
+                for (int i = 0; i < map.getWidth; i++)
+                {
+                    output += "\n" + obstacleChar;
+                }
+                return output;
+            }*/
         }
         public Form1()
         {
@@ -275,7 +331,6 @@ namespace GADE6122
 
         private void button1_Click(object sender, EventArgs e)
         {
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -292,5 +347,6 @@ namespace GADE6122
         {
 
         }
+
     }
 }

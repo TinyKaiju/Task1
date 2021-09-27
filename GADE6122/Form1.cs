@@ -35,6 +35,11 @@ namespace GADE6122
             {
                 return this.y;
             }
+
+            public tiletype getTiletype()
+            {
+                return type;
+            }
         }
 
         public class Obstacle : Tile
@@ -128,12 +133,60 @@ namespace GADE6122
             //public abstract override ToString() { }
 
             //vision Setting
-            public void setVisionTiles()
-            {
-                visionTiles[0] = new EmptyTile(this.x - 1, this.y);
-                visionTiles[1] = new EmptyTile(this.x + 1, this.y);
-                visionTiles[2] = new EmptyTile(this.x, this.y - 1);
-                visionTiles[3] = new EmptyTile(this.y, this.y + 1);
+            public void setVisionTiles(Tile upVis, Tile downVis, Tile rightVis, Tile leftVis)
+            {/*
+                tiletype tileTemp = upVis.getTiletype();
+
+                if (tileTemp == tiletype.Hero)
+                { 
+                    visionTiles[0] = new Hero(upVis.getX(), upVis.getY());
+                }
+                if (tileTemp == tiletype.Enemy)
+                {
+                    visionTiles[0] = new Goblin(upVis.getX(), upVis.getY());
+                }
+                else
+                { 
+                    visionTiles[0] = new EmptyTile(upVis.getX(), upVis.getY());
+                }
+
+                if (tileTemp == tiletype.Hero) //down
+                {
+                    visionTiles[1] = new Hero(downVis.getX(), downVis.getY());
+                }
+                if (tileTemp == tiletype.Enemy)
+                {
+                    visionTiles[1] = new Goblin(downVis.getX(), downVis.getY());
+                }
+                else
+                {
+                    visionTiles[1] = new EmptyTile(downVis.getX(), downVis.getY());
+                }
+
+                if (tileTemp == tiletype.Hero)
+                {
+                    visionTiles[2] = new Hero(rightVis.getX(), rightVis.getY());
+                }
+                if (tileTemp == tiletype.Enemy)
+                {
+                    visionTiles[2] = new Goblin(rightVis.getX(), rightVis.getY());
+                }
+                else
+                {
+                    visionTiles[2] = new EmptyTile(rightVis.getX(), rightVis.getY());
+                }
+                if (tileTemp == tiletype.Hero)
+                {
+                    visionTiles[3] = new Hero(leftVis.getX(), leftVis.getY());
+                }
+                if (tileTemp == tiletype.Enemy)
+                {
+                    visionTiles[3] = new Goblin(leftVis.getX(), leftVis.getY());
+                }
+                else
+                {
+                    visionTiles[3] = new EmptyTile(leftVis.getX(), leftVis.getY());
+                }*/
             }
         }
 
@@ -162,9 +215,35 @@ namespace GADE6122
             { }
             public override movementEnum ReturnMove(movementEnum move)
             {
-
-                //if statement?               
-
+                move = movementEnum.None;
+                int direct = randNum.Next(4);
+                while (move == movementEnum.None)
+                {
+                    switch (direct)
+                    {
+                        case 0:
+                            type = visionTiles[0].getTiletype();
+                            move = movementEnum.Up;
+                            break;
+                        case 1:
+                            type = visionTiles[1].getTiletype();
+                            move = movementEnum.Down;
+                            break;
+                        case 2:
+                            type = visionTiles[2].getTiletype();
+                            move = movementEnum.Right;
+                            break;
+                        case 3:
+                            type = visionTiles[3].getTiletype();
+                            move = movementEnum.Left;
+                            break;
+                    }
+                    if ((type == tiletype.Hero) || (type == tiletype.Hero))
+                    {
+                        move = movementEnum.None;
+                        direct = randNum.Next(4);
+                    }
+                }
                 return move;
             }
         }
@@ -201,12 +280,12 @@ namespace GADE6122
             private Enemy[] enemies;
             private int mapWidth;
             private int mapHeight;
-            private Random randNum;
+            private Random randomNum = new Random();
 
             public Map(int wMin, int wMax, int hMin, int hMax, int e)
             {
-                this.mapWidth = randNum.Next(wMin, wMax);
-                this.mapHeight = randNum.Next(hMin, hMax);
+                mapWidth = randomNum.Next(wMin, wMax);
+                mapHeight = randomNum.Next(hMin, hMax);
 
                 enemies = new Enemy[e];
                 mapTiles = new Tile[mapWidth, mapHeight];
@@ -220,27 +299,78 @@ namespace GADE6122
                     mapTiles[enemies[i].getX(), enemies[i].getY()] = enemies[i];
                 }
 
-                UpdateVision();
                 fillMap();
+                UpdateVision();
+                
             }
 
             public void UpdateVision()
             {
-                player.setVisionTiles();
+                int x = player.getX();
+                int y = player.getY();
+
+                int up, down, right, left;
+                up = y + 1;
+                down = y - 1;
+                right = x + 1;
+                left = x - 1;
+
+                if(up >= mapHeight)
+                {
+                    up = y;
+                }
+                if (down <= 0)
+                {
+                    down = y;
+                }
+                if (right >= mapHeight)
+                {
+                    up = y;
+                }
+                if (left <= 0)
+                {
+                    down = y;
+                }
+
+                player.setVisionTiles(mapTiles[x, up], mapTiles[x, down], mapTiles[right, y], mapTiles[left, y]);
                 for (int i = 0; i < enemies.Length; i++)
                 {
-                    enemies[i].setVisionTiles();
+                    x = enemies[i].getX();
+                    y = enemies[i].getY();
+                    up = y + 1;
+                    down = y - 1;
+                    right = x + 1;
+                    left = x - 1;
+
+                    if (up >= mapHeight)
+                    {
+                        up = y;
+                    }
+                    if (down <= 0)
+                    {
+                        down = y;
+                    }
+                    if (right >= mapHeight)
+                    {
+                        up = y;
+                    }
+                    if (left <= 0)
+                    {
+                        down = y;
+                    }
+
+                    enemies[i].setVisionTiles(mapTiles[x, up], mapTiles[x, down], mapTiles[right, y], mapTiles[left, y]);
                 }
             }
 
             private Tile Create(Tile.tiletype type)
             {
-                int uniqueX = randNum.Next(mapWidth);
-                int uniqueY = randNum.Next(mapHeight);
+                int uniqueX = randomNum.Next(mapWidth);
+                int uniqueY = randomNum.Next(mapHeight);
                 while (mapTiles[uniqueX, uniqueY] != null)
                 {
-                    uniqueX = randNum.Next(mapWidth);
-                    uniqueY = randNum.Next(mapHeight);
+                    uniqueX = randomNum.Next(mapWidth);
+                    uniqueY = randomNum.Next(mapHeight);
                 }
 
 
@@ -248,10 +378,8 @@ namespace GADE6122
                 {
                     case Tile.tiletype.Hero:
                         return new Hero(uniqueX, uniqueY);
-                        break;
                     case Tile.tiletype.Enemy:
                         return new Goblin(uniqueX, uniqueY);
-                        break;
                     default: return new EmptyTile(uniqueX, uniqueY);
                 }
             }
@@ -297,6 +425,7 @@ namespace GADE6122
                 player.Move(move);
 
             }
+
         }
 
         //Question 3.3
@@ -310,7 +439,7 @@ namespace GADE6122
 
             public GameEngine(int widthMin, int widthMax, int heightMin, int heightMax, int enemyNum) // constructor
             {
-                Map map = new Map(widthMin, widthMax, heightMin, heightMax, enemyNum);
+                map = new Map(widthMin, widthMax, heightMin, heightMax, enemyNum);
             }
 
             public bool MovePlayer(Character.movementEnum moveType)
@@ -389,6 +518,8 @@ namespace GADE6122
         public Form1()
         {
             InitializeComponent();
+            GameEngine game = new GameEngine(10, 20, 10, 20, 5);
+            richTextBox1.Text = game.ToString();
         }
 
         private void button1_Click(object sender, EventArgs e)

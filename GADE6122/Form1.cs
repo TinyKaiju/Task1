@@ -21,19 +21,10 @@ namespace GADE6122
             public enum tiletype { Hero, Enemy, Gold, Weapon };
             public tiletype type;
 
-
-            public Tile()
-            { }
             public Tile(int a, int b) //Constructor
             {
                 this.x = a;
                 this.y = b;
-            }
-            public Tile(int a, int b, tiletype typeTile) //Constructor
-            {
-                this.x = a;
-                this.y = b;
-                this.type = typeTile;
             }
 
             public int getX()
@@ -48,20 +39,14 @@ namespace GADE6122
 
         public class Obstacle : Tile
         {
-            public Obstacle(int x, int y)
-            {
-                this.x = x;
-                this.y = y;
-            }
+            public Obstacle(int x, int y) : base(x, y)
+            { }
         }
 
         public class EmptyTile : Tile
         {
-            public EmptyTile(int x, int y)
-            {
-                this.x = x;
-                this.y = y;
-            }
+            public EmptyTile(int x, int y) : base(x, y)
+            { }
         }
         //Question 2.2
         public abstract class Character : Tile
@@ -70,7 +55,7 @@ namespace GADE6122
             protected int maxHp;
             protected int damage;
             protected Tile[] visionTiles; //In ArrayVision = North, East, South, West
-            public enum movementEnum { No_movement, Up, Down, Left, Right };
+            public enum movementEnum { None, Up, Down, Left, Right };
             movementEnum movement;
 
             //Get methods
@@ -86,18 +71,9 @@ namespace GADE6122
             {
                 return this.damage;
             }
-            public Character()
+ 
+            public Character(int a, int b, char symbol) : base(a, b) // constructor
             { }
-            public Character(int a, int b, char symbol) // constructor
-            {
-                this.x = a;
-                this.y = b;
-            }
-            public Character(int a, int b, int damage, int maxHP, char symbol) // constructor
-            {
-                this.x = a;
-                this.y = b;
-            }
 
             public virtual void Attack(Character target)
             { }
@@ -161,23 +137,12 @@ namespace GADE6122
         public abstract class Enemy : Character
         {
             protected Random randNum;
-            public Enemy()
-            { }
 
-            public Enemy(int x, int y)  //Constructor for goblin
+            public Enemy(int x, int y, int Damage, int Maxhp, char Symbol) : base(x, y, Symbol) //Constructor
             {
-                this.x = x;
-                this.y = y;
-            }
-
-            public Enemy(int x, int y, int Damage, int Maxhp, char Symbol)  //Constructor
-            {
-                this.x = x;
-                this.y = y;
-
                 this.damage = Damage;
                 this.maxHp = Maxhp;
-                Symbol = 'G';
+                this.type = tiletype.Enemy;
             }
 
             public override string ToString()
@@ -189,13 +154,8 @@ namespace GADE6122
         //Question 2.5
         public class Goblin : Enemy
         {
-            public Goblin(int x, int y) //Constructor
-            {
-                this.x = x;
-                this.y = y;
-                this.maxHp = 10;
-                this.damage = 1;
-            }
+            public Goblin(int x, int y) : base(x, y, 1, 10, 'G')//Constructor
+            { }
             public override movementEnum ReturnMove(movementEnum move)
             {
 
@@ -208,16 +168,13 @@ namespace GADE6122
         //Question 2.6
         public class Hero : Character
         {
-            public Hero()
-            { }
-            public Hero(int x, int y) //Constructor
+
+            public Hero(int x, int y) : base(x, y, 'H')//Constructor
             {
-                this.x = x;
-                this.y = y;
                 this.damage = 2;
                 this.maxHp = getMaxHp();
                 this.hp = getHp();
-                char SymbolHero = 'H';
+                this.type = tiletype.Hero;
             }
             public override movementEnum ReturnMove(movementEnum move)
             {

@@ -59,9 +59,10 @@ namespace GADE6122
             protected int hp;
             protected int maxHp;
             protected int damage;
-            protected Tile[] visionTiles; //In ArrayVision = North, East, South, West
+            protected Tile[] visionTiles = new Tile[4]; //In ArrayVision = North, East, South, West
             public enum movementEnum { None, Up, Down, Left, Right };
-            movementEnum movement;
+
+            private char symbol;
 
             //Get methods
             public int getHp()
@@ -77,14 +78,21 @@ namespace GADE6122
                 return this.damage;
             }
 
+            public char getSymbol()
+            {
+                return symbol;
+            }
+
             public Character(int a, int b, char symbol) : base(a, b) // constructor
-            { }
+            {
+                this.symbol = symbol;
+            }
 
             public virtual void Attack(Character target)
             { }
             public bool isDead()
             {
-                if (this.hp == 0)
+                if (this.hp <= 0)
                 {
                     return true;
                 }
@@ -106,7 +114,7 @@ namespace GADE6122
                 int x = target.getX();
                 int y = target.getY();
 
-                int distance = (this.getX() - x) + (this.getY() - y);
+                int distance = (Math.Abs(this.getX() - x)) + Math.Abs((this.getY() - y));
 
                 return distance;
             }
@@ -115,16 +123,16 @@ namespace GADE6122
                 switch (move)
                 {
                     case movementEnum.Up:
-                        this.y++;
+                        this.x--;
                         break;
                     case movementEnum.Down:
-                        this.y--;
-                        break;
-                    case movementEnum.Right:
                         this.x++;
                         break;
+                    case movementEnum.Right:
+                        this.y++;
+                        break;
                     case movementEnum.Left:
-                        this.x--;
+                        this.y--;
                         break;
                 }
 
@@ -135,58 +143,15 @@ namespace GADE6122
             //vision Setting
             public void setVisionTiles(Tile upVis, Tile downVis, Tile rightVis, Tile leftVis)
             {
-                tiletype tileTemp = upVis.getTiletype();
+                this.visionTiles[0] = upVis;
+                this.visionTiles[1] = downVis;
+                this.visionTiles[2] = rightVis;
+                this.visionTiles[3] = leftVis;
+            }
 
-                if (tileTemp == tiletype.Hero)
-                { 
-                    this.visionTiles[0] = new Hero(upVis.getX(), upVis.getY());
-                }
-                if (tileTemp == tiletype.Enemy)
-                {
-                    this.visionTiles[0] = new Goblin(upVis.getX(), upVis.getY());
-                }
-                else
-                { 
-                    this.visionTiles[0] = new EmptyTile(upVis.getX(), upVis.getY());
-                }
-
-                if (tileTemp == tiletype.Hero) //down
-                {
-                    this.visionTiles[1] = new Hero(downVis.getX(), downVis.getY());
-                }
-                if (tileTemp == tiletype.Enemy)
-                {
-                    this.visionTiles[1] = new Goblin(downVis.getX(), downVis.getY());
-                }
-                else
-                {
-                    this.visionTiles[1] = new EmptyTile(downVis.getX(), downVis.getY());
-                }
-
-                if (tileTemp == tiletype.Hero)
-                {
-                    this.visionTiles[2] = new Hero(rightVis.getX(), rightVis.getY());
-                }
-                if (tileTemp == tiletype.Enemy)
-                {
-                    this.visionTiles[2] = new Goblin(rightVis.getX(), rightVis.getY());
-                }
-                else
-                {
-                    this.visionTiles[2] = new EmptyTile(rightVis.getX(), rightVis.getY());
-                }
-                if (tileTemp == tiletype.Hero)
-                {
-                    this.visionTiles[3] = new Hero(leftVis.getX(), leftVis.getY());
-                }
-                if (tileTemp == tiletype.Enemy)
-                {
-                    this.visionTiles[3] = new Goblin(leftVis.getX(), leftVis.getY());
-                }
-                else
-                {
-                    this.visionTiles[3] = new EmptyTile(leftVis.getX(), leftVis.getY());
-                }
+            public void damaged(int dmg)
+            {
+                this.hp -= dmg;
             }
         }
 
@@ -199,6 +164,7 @@ namespace GADE6122
             {
                 this.damage = Damage;
                 this.maxHp = Maxhp;
+                this.hp = Maxhp;
                 this.type = tiletype.Enemy;
             }
 
@@ -251,13 +217,11 @@ namespace GADE6122
         //Question 2.6
         public class Hero : Character
         {
-
-
-            public Hero(int x, int y) : base(x, y, 'H')//Constructor
+            public Hero(int x, int y, int hp) : base(x, y, 'H')//Constructor
             {
                 this.damage = 2;
-                this.maxHp = getMaxHp();
-                this.hp = getHp();
+                this.maxHp = hp;
+                this.hp = hp;
                 this.type = tiletype.Hero;
             }
             public override movementEnum ReturnMove(movementEnum move)
@@ -267,6 +231,16 @@ namespace GADE6122
             public override string ToString()
             {
                 return ("Player Stats:\n HP: " + hp + "/" + maxHp + "\n Damage: " + damage + "\n [" + getX() + "," + getY() + "]");
+            }
+
+            public override bool CheckRange(Character target)
+            {
+                return base.CheckRange(target);
+            }
+
+            public override void Attack(Character target)
+            {
+                target.damaged(this.damage);
             }
         }
 
@@ -282,102 +256,70 @@ namespace GADE6122
             private int mapHeight;
             private Random randomNum = new Random();
 
-            public Map(int wMin, int wMax, int hMin, int hMax, int e)
+            public Map(int wMin, int wMax, int hMin, int hMax, int enemyNum)
             {
-                mapWidth = randomNum.Next(wMin, wMax);
-                mapHeight = randomNum.Next(hMin, hMax);
+                mapWidth = randomNum.Next(wMin, wMax) + 2;
+                mapHeight = randomNum.Next(hMin, hMax) + 2;
 
-                enemies = new Enemy[e];
+                enemies = new Enemy[enemyNum];
                 mapTiles = new Tile[mapWidth, mapHeight];
 
-                player = (Hero)Create(Tile.tiletype.Hero); //cast????
+                fillMap();
+
+                player = (Hero)Create(Tile.tiletype.Hero); //cast
                 mapTiles[player.getX(), player.getY()] = player;
 
-                for (int i = 0; i < e; i++)
+                for (int i = 0; i < enemyNum; i++)
                 {
                     enemies[i] = (Enemy)Create(Tile.tiletype.Enemy);
                     mapTiles[enemies[i].getX(), enemies[i].getY()] = enemies[i];
                 }
 
-                fillMap();
                 UpdateVision();
-                
+
             }
 
-            public void UpdateVision()
+            public void UpdateVision() // used to set vision after moving
             {
                 int x = player.getX();
                 int y = player.getY();
 
                 int up, down, right, left;
-                up = y + 1;
-                down = y - 1;
-                right = x + 1;
-                left = x - 1;
+                up = x - 1;
+                down = x + 1;
+                right = y + 1;
+                left = y - 1;
 
-                if(up >= mapHeight)
-                {
-                    up = y;
-                }
-                if (down <= 0)
-                {
-                    down = y;
-                }
-                if (right >= mapHeight)
-                {
-                    up = y;
-                }
-                if (left <= 0)
-                {
-                    down = y;
-                }
-
-                player.setVisionTiles(mapTiles[x, up], mapTiles[x, down], mapTiles[right, y], mapTiles[left, y]);
+                player.setVisionTiles(mapTiles[up, y], mapTiles[down, y], mapTiles[x, right], mapTiles[x, left]);
                 for (int i = 0; i < enemies.Length; i++)
                 {
                     x = enemies[i].getX();
                     y = enemies[i].getY();
-                    up = y + 1;
-                    down = y - 1;
-                    right = x + 1;
-                    left = x - 1;
+                    up = x - 1;
+                    down = x + 1;
+                    right = y + 1;
+                    left = y - 1;
 
-                    if (up >= mapHeight)
-                    {
-                        up = y;
-                    }
-                    if (down <= 0)
-                    {
-                        down = y;
-                    }
-                    if (right >= mapHeight)
-                    {
-                        up = y;
-                    }
-                    if (left <= 0)
-                    {
-                        down = y;
-                    }
-
-                    enemies[i].setVisionTiles(mapTiles[x, up], mapTiles[x, down], mapTiles[right, y], mapTiles[left, y]);
+                    enemies[i].setVisionTiles(mapTiles[up, y], mapTiles[down, y], mapTiles[x, right], mapTiles[x, left]);
                 }
+
             }
 
             private Tile Create(Tile.tiletype type)
             {
-                int uniqueX = randomNum.Next(mapWidth);
-                int uniqueY = randomNum.Next(mapHeight);
-                while (mapTiles[uniqueX, uniqueY] != null)
+                int uniqueX = randomNum.Next(mapWidth - 1);
+                int uniqueY = randomNum.Next(mapHeight - 1);
+                while ((mapTiles[uniqueX, uniqueY] is not EmptyTile) && (mapTiles[uniqueX, uniqueY] is not EmptyTile))
                 {
-                    uniqueX = randomNum.Next(mapWidth);
-                    uniqueY = randomNum.Next(mapHeight);
+                    uniqueX = randomNum.Next(mapWidth - 1);
+                    uniqueY = randomNum.Next(mapHeight - 1);
                 }
 
 
                 switch (type)  // create tile 
                 {
                     case Tile.tiletype.Hero:
-                        return new Hero(uniqueX, uniqueY);
+                        return new Hero(uniqueX, uniqueY, 10);
                     case Tile.tiletype.Enemy:
                         return new Goblin(uniqueX, uniqueY);
                     default: return new EmptyTile(uniqueX, uniqueY);
@@ -390,11 +332,18 @@ namespace GADE6122
                 {
                     for (int y = 0; y < mapHeight; y++)
                     {
-                        if (mapTiles[x, y] == null)
-                        {
-                            mapTiles[x, y] = new EmptyTile(x, y);
-                        }
+                        mapTiles[x, y] = new EmptyTile(x, y);
                     }
+                }
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    mapTiles[x, 0] = new Obstacle(x, 0);
+                    mapTiles[x, mapHeight - 1] = new Obstacle(x, mapHeight - 1);
+                }
+                for (int y = 0; y < mapHeight; y++)
+                {
+                    mapTiles[0, y] = new Obstacle(0, y); //top row
+                    mapTiles[mapWidth - 1, y] = new Obstacle(mapWidth - 1, y);//bottom row
                 }
             }
 
@@ -404,7 +353,7 @@ namespace GADE6122
             }
             public int getHeight()
             {
-                return mapWidth;
+                return mapHeight;
             }
             public Tile getMapTiles(int x, int y)
             {
@@ -422,10 +371,89 @@ namespace GADE6122
 
             public void Move(Character.movementEnum move)
             {
+                int oldX = getPlayerX();
+                int oldY = getPlayerY();
                 player.Move(move);
 
+                mapTiles[oldX, oldY] = new EmptyTile(oldX, oldY);
+                mapTiles[getPlayerX(), getPlayerY()] = player;
             }
 
+            public List<Enemy> getTargetEnemies() // Creates list of enemies in range of attack
+            {
+                int n = 0;
+                List<Enemy> enemyTargets = new List<Enemy>();
+
+                for (int t = 0; t < enemies.Length; t++)
+                {
+                    
+                    if (player.CheckRange(enemies[t]))
+                    {
+                        enemyTargets.Add(enemies[t]);
+                        n++;
+                    }
+                }
+                return enemyTargets;
+            }
+
+            public string tryAttack(Enemy target) // Check to see if attack is possible and successful
+            {
+                List<Enemy> enemies= getTargetEnemies();
+                if (enemies.Contains(target))
+                {
+                    player.Attack(target);
+
+                    if (!target.isDead())
+                    {
+                        return target.ToString() + "HP: " + Convert.ToString(target.getHp());
+                    }
+                    else
+                    {
+                        int x = target.getX();
+                        int y = target.getY();
+                        String output = "Killed " + target.ToString();
+
+                        mapTiles[x, y] = new EmptyTile(x, y);
+                        removeEnemy(target);
+
+                        return output;
+                    }
+                }
+                else
+                {
+                    return "Attack failed";
+                }
+            }
+
+            public void removeEnemy(Enemy target) // Removes enemy from array and resizes it
+            {
+                int j = 0;
+                Enemy[] temp = new Enemy[enemies.Length - 1];
+
+                for ( int i = 0; i < enemies.Length; i++)
+                {
+                    if (enemies[i] != target)
+                    {
+                        temp[j] = enemies[i];
+                        j++;
+                    }
+                }
+                enemies = new Enemy[temp.Length];
+                for (int i = 0; i < temp.Length; i++)
+                {
+                    enemies[i] = temp[i];
+                }
+            }
+
+            public virtual string getPlayerInfo()
+            {
+                return player.ToString();
+            }
+
+            public virtual string getEnemyInfo(Enemy target)
+            {
+                return target.ToString() + "\nHP: " + Convert.ToString(target.getHp()) ;
+            }
         }
 
         //Question 3.3
@@ -433,8 +461,8 @@ namespace GADE6122
         {
             private const char heroChar = 'H';
             private const char goblinChar = 'G';
-            private const char emptyChar = '.';
-            private const char obstacleChar = '#';
+            private const char emptyChar = '#';
+            private const char obstacleChar = 'X';
             private Map map;
 
             public GameEngine(int widthMin, int widthMax, int heightMin, int heightMax, int enemyNum) // constructor
@@ -451,25 +479,22 @@ namespace GADE6122
                 switch (moveType)
                 {
                     case Character.movementEnum.Up:
-                        y++;
+                        x--;
                         break;
                     case Character.movementEnum.Down:
-                        y--;
-                        break;
-                    case Character.movementEnum.Right:
                         x++;
                         break;
+                    case Character.movementEnum.Right:
+                        y++;
+                        break;
                     case Character.movementEnum.Left:
-                        x--;
+                        y--;
                         break;
                 }
 
-                EmptyTile tempTile = new EmptyTile(x, y);
-
-                if (map.getMapTiles(x, y).type == tempTile.type) // player can move
+                if (map.getMapTiles(x, y) is EmptyTile) // player can move
                 {
                     map.Move(moveType);
-                    map.fillMap();
                     return true;
                 }
                 else
@@ -477,42 +502,55 @@ namespace GADE6122
                     return false; //nothing
                 }
             }
-
+            
+            public string getPlayerInfo()
+            {
+                return map.getPlayerInfo();
+            }
+            public string getEnemyInfo(Enemy target)
+            {
+                return map.getEnemyInfo(target);
+            }
             public override string ToString()
             {
+         
                 string output = "";
-                for (int i = 0; i < map.getWidth(); i++)
-                {
-                    output += obstacleChar;
-                }
                 for (int x = 0; x < map.getWidth(); x++)
                 {
                     for (int y = 0; y < map.getHeight(); y++)
                     {
-                        if (map.getMapTiles(x, y) == null)
+                        if (map.getMapTiles(x, y) is Character)
                         {
-                            output += "\n" + obstacleChar;
+                            Character temp = (Character)map.getMapTiles(x, y);
+                            output += temp.getSymbol();
+                        }
+                        else
+                        {
                             switch (map.getMapTiles(x, y))
                             {
-                                case Hero:
-                                    output += heroChar;
+                                case Obstacle:
+                                    output += obstacleChar;
                                     break;
-                                case Goblin:
-                                    output += goblinChar;
-                                    break;
+
                                 case EmptyTile:
                                     output += emptyChar;
                                     break;
                             }
-                            output += obstacleChar;
                         }
                     }
-                }
-                for (int i = 0; i < map.getWidth(); i++)
-                {
-                    output += "\n" + obstacleChar;
+                    output += "\n";
                 }
                 return output;
+            }
+            
+            public List<Enemy> getTargets()
+            {
+                return map.getTargetEnemies();
+            }
+
+            public string tryAttack(Enemy target)
+            {
+                return map.tryAttack(target);
             }
         }
         GameEngine game;
@@ -520,7 +558,7 @@ namespace GADE6122
         {
             InitializeComponent();
             game = new GameEngine(10, 20, 10, 20, 5);
-            rtbMap.Text = game.ToString();
+            updateForm();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -545,21 +583,85 @@ namespace GADE6122
         private void btnUp_Click(object sender, EventArgs e)
         {
             game.MovePlayer(Character.movementEnum.Up);
+            updateForm();
         }
 
         private void btnDown_Click(object sender, EventArgs e)
         {
             game.MovePlayer(Character.movementEnum.Down);
+            updateForm();
         }
 
         private void btnLeft_Click(object sender, EventArgs e)
         {
             game.MovePlayer(Character.movementEnum.Left);
+            updateForm();
         }
 
         private void btnRight_Click(object sender, EventArgs e)
         {
             game.MovePlayer(Character.movementEnum.Right);
+            updateForm();
+        }
+
+        public void updateAttackList()
+        {
+            CmbEnemyList.Items.Clear();
+            CmbEnemyList.Text = "";
+            for (int i = 0; i < game.getTargets().Count(); i++)
+            {
+                CmbEnemyList.Items.Add(game.getTargets().ElementAt(i));
+            }
+            if (CmbEnemyList.Items.Count != 0)
+            {
+                CmbEnemyList.SelectedIndex = 0;
+                updateEnemy();
+            }
+        }
+
+        public void updateForm()
+        {
+            rtbMap.Clear();
+            rtbMap.Text = game.ToString();
+            MemoPlayerInfo.Text = game.getPlayerInfo();
+            updateAttackList();
+            updateEnemy();
+            lblOutput.Text = "";
+        }
+
+        private void BtnAttack_Click(object sender, EventArgs e)
+        {
+
+            if (CmbEnemyList.Items.Count != 0)
+            {
+                int i = CmbEnemyList.SelectedIndex;
+                Enemy target = (Enemy)CmbEnemyList.Items[i];
+                lblOutput.Text = game.tryAttack(target);
+                rtbMap.Clear();
+                rtbMap.Text = game.ToString();
+                updateAttackList();
+                updateEnemy();
+            }
+            else
+            {
+                lblOutput.Text = "No Targets Available";
+            }
+        }
+
+        private void CmbEnemyList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            updateEnemy();
+        }
+
+        public void updateEnemy()
+        {
+            MemoEnemyInfo.Clear();
+            if (CmbEnemyList.Items.Count != 0)
+            {
+                int i = CmbEnemyList.SelectedIndex;
+                Enemy target = (Enemy)CmbEnemyList.Items[i];
+                MemoEnemyInfo.Text = game.getEnemyInfo(target);
+            }
         }
     }
 }

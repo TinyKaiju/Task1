@@ -30,7 +30,7 @@ namespace GADE6122
         private void InitializeComponent()
         {
             this.button1 = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblOutput = new System.Windows.Forms.Label();
             this.MemoPlayerInfo = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
@@ -56,14 +56,13 @@ namespace GADE6122
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // label1
+            // lblOutput
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(379, 528);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 15);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "label1";
+            this.lblOutput.AutoSize = true;
+            this.lblOutput.Location = new System.Drawing.Point(21, 9);
+            this.lblOutput.Name = "lblOutput";
+            this.lblOutput.Size = new System.Drawing.Size(0, 15);
+            this.lblOutput.TabIndex = 1;
             // 
             // MemoPlayerInfo
             // 
@@ -110,6 +109,7 @@ namespace GADE6122
             this.BtnAttack.TabIndex = 5;
             this.BtnAttack.Text = "Attack";
             this.BtnAttack.UseVisualStyleBackColor = false;
+            this.BtnAttack.Click += new System.EventHandler(this.BtnAttack_Click);
             // 
             // MemoEnemyInfo
             // 
@@ -129,6 +129,7 @@ namespace GADE6122
             this.CmbEnemyList.Name = "CmbEnemyList";
             this.CmbEnemyList.Size = new System.Drawing.Size(302, 23);
             this.CmbEnemyList.TabIndex = 1;
+            this.CmbEnemyList.SelectedIndexChanged += new System.EventHandler(this.CmbEnemyList_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -205,7 +206,7 @@ namespace GADE6122
             this.rtbMap.Location = new System.Drawing.Point(21, 36);
             this.rtbMap.Name = "rtbMap";
             this.rtbMap.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.rtbMap.Size = new System.Drawing.Size(387, 309);
+            this.rtbMap.Size = new System.Drawing.Size(406, 416);
             this.rtbMap.TabIndex = 8;
             this.rtbMap.Text = "";
             // 
@@ -221,7 +222,7 @@ namespace GADE6122
             this.Controls.Add(this.btnUp);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.MemoPlayerInfo);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblOutput);
             this.Controls.Add(this.button1);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -236,7 +237,7 @@ namespace GADE6122
         #endregion
 
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblOutput;
         private System.Windows.Forms.RichTextBox MemoPlayerInfo;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button BtnAttack;

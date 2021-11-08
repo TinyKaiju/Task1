@@ -114,9 +114,20 @@ namespace GADE6122
                 int x = target.getX();
                 int y = target.getY();
 
+                
                 int distance = (Math.Abs(this.getX() - x)) + Math.Abs((this.getY() - y));
-
-                return distance;
+                if (target is Mage)
+                {
+                    if ((Math.Abs(this.getX() - x) == 2) && Math.Abs((this.getY() - y)) == 1)
+                    {
+                        distance = 1;
+                    }
+                    else if ((Math.Abs(this.getX() - x) == 1) && Math.Abs((this.getY() - y)) == 2)
+                    {
+                        distance = 1;
+                    }
+                }
+                    return distance;
             }
             public void Move(movementEnum move)
             {
@@ -214,10 +225,27 @@ namespace GADE6122
             }
         }
 
+        public class Mage : Enemy // Task2 Question 2.3
+        {
+            public Mage(int x, int y) : base(x, y, 5, 5, 'M')
+            {
+
+            }
+
+            public override movementEnum ReturnMove(movementEnum move)
+            {
+                return 0;
+            }
+
+            public override bool CheckRange(Character target)
+            {
+                return base.CheckRange(target);
+            }
+        }
+
         //Question 2.6
         public class Hero : Character
-        {
-            public Hero(int x, int y, int hp) : base(x, y, 'H')//Constructor
+        {            public Hero(int x, int y, int hp) : base(x, y, 'H')//Constructor
             {
                 this.damage = 2;
                 this.maxHp = hp;
@@ -243,6 +271,7 @@ namespace GADE6122
                 target.damaged(this.damage);
             }
         }
+
 
         //Question 3
         //Question 3.1

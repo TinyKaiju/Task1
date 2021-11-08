@@ -114,9 +114,20 @@ namespace GADE6122
                 int x = target.getX();
                 int y = target.getY();
 
+                
                 int distance = (Math.Abs(this.getX() - x)) + Math.Abs((this.getY() - y));
-
-                return distance;
+                if (this is Mage)// Check if works properly
+                {
+                    if ((Math.Abs(this.getX() - x) == 2) && Math.Abs((this.getY() - y)) == 1)
+                    {
+                        distance = 1;
+                    }
+                    else if ((Math.Abs(this.getX() - x) == 1) && Math.Abs((this.getY() - y)) == 2)
+                    {
+                        distance = 1;
+                    }
+                }
+                    return distance;
             }
             public void Move(movementEnum move)
             {
@@ -214,10 +225,33 @@ namespace GADE6122
             }
         }
 
+        public class Mage : Enemy // Task2 Question 2.3
+        {
+            public Mage(int x, int y) : base(x, y, 5, 5, 'M')
+            {
+
+            }
+
+            public override movementEnum ReturnMove(movementEnum move)
+            {
+                return 0;
+            }
+
+            public override bool CheckRange(Character target)
+            {
+                return base.CheckRange(target);
+            }
+
+            public override string ToString()
+            {
+                return "Mage at [" + x + "," + y + "] (" + damage + ")"; // double check 
+            }
+
+        }
+
         //Question 2.6
         public class Hero : Character
-        {
-            public Hero(int x, int y, int hp) : base(x, y, 'H')//Constructor
+        {            public Hero(int x, int y, int hp) : base(x, y, 'H')//Constructor
             {
                 this.damage = 2;
                 this.maxHp = hp;
@@ -244,8 +278,6 @@ namespace GADE6122
             }
         }
 
-        //Question 3
-        //Question 3.1
         public class Map
         {
 
@@ -321,7 +353,13 @@ namespace GADE6122
                     case Tile.tiletype.Hero:
                         return new Hero(uniqueX, uniqueY, 10);
                     case Tile.tiletype.Enemy:
-                        return new Goblin(uniqueX, uniqueY);
+                        int rand = randomNum.Next(2);
+                        switch (rand) // Randomise enemy type
+                        {
+                            case 0: return new Goblin(uniqueX, uniqueY);
+                            case 1: return new Mage(uniqueX, uniqueY);
+                            default: return new EmptyTile(uniqueX, uniqueY);
+                        }
                     default: return new EmptyTile(uniqueX, uniqueY);
                 }
             }
@@ -456,7 +494,6 @@ namespace GADE6122
             }
         }
 
-        //Question 3.3
         public class GameEngine
         {
             private const char heroChar = 'H';

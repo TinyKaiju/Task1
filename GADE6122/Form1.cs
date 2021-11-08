@@ -116,7 +116,7 @@ namespace GADE6122
 
                 
                 int distance = (Math.Abs(this.getX() - x)) + Math.Abs((this.getY() - y));
-                if (target is Mage)
+                if (this is Mage)// Check if works properly
                 {
                     if ((Math.Abs(this.getX() - x) == 2) && Math.Abs((this.getY() - y)) == 1)
                     {
@@ -241,6 +241,12 @@ namespace GADE6122
             {
                 return base.CheckRange(target);
             }
+
+            public override string ToString()
+            {
+                return "Mage at [" + x + "," + y + "] (" + damage + ")"; // double check 
+            }
+
         }
 
         //Question 2.6
@@ -272,9 +278,6 @@ namespace GADE6122
             }
         }
 
-
-        //Question 3
-        //Question 3.1
         public class Map
         {
 
@@ -350,7 +353,13 @@ namespace GADE6122
                     case Tile.tiletype.Hero:
                         return new Hero(uniqueX, uniqueY, 10);
                     case Tile.tiletype.Enemy:
-                        return new Goblin(uniqueX, uniqueY);
+                        int rand = randomNum.Next(2);
+                        switch (rand) // Randomise enemy type
+                        {
+                            case 0: return new Goblin(uniqueX, uniqueY);
+                            case 1: return new Mage(uniqueX, uniqueY);
+                            default: return new EmptyTile(uniqueX, uniqueY);
+                        }
                     default: return new EmptyTile(uniqueX, uniqueY);
                 }
             }
@@ -485,7 +494,6 @@ namespace GADE6122
             }
         }
 
-        //Question 3.3
         public class GameEngine
         {
             private const char heroChar = 'H';
